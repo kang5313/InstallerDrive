@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="514063112833-d3f5ltm1617ktl50sh397ehv7smcd9co.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+        <title>Aemulus Corp</title>
+    </head>
+
+    <body class="text-center">
+ 
+            
+        <div class = "main-div mt-5" id="login_div" style="width:20em;margin:auto">
+            <img class="mb-4" src="img/AemulusLogo.png" alt="Aemulus">
+            <input class="form-control" type="email" placeholder = "Email..." id="inputEmail">
+            <input class="form-control" type="password" placeholder = "Password..." id="inputPassword">
+            <!--<div class="checkbox mt-2" style="text-align: left">
+                    <label>
+                        <input type="checkbox" value="remember-me"> Remember me
+                    </label>
+                </div>-->
+            <button type="submit" class="mt-2 btn btn-lg btn-primary btn-block" onclick="login()">Sign In</button>
+            <button type="submit" class="mt-2 btn btn-lg btn-primary btn-block" onclick="resetPw()">Reset Password</button>
+            <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark" style="margin-top:0.5em;width:320px;height:50px"></div>
+            <div style="margin:0">  
+                <a href="/register">Create Account</a>
+            </div>
+        </div>
+        <script src="/login.js"></script>
+    </body>
+</html>

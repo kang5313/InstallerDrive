@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--Bootstrap-->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+        
+        <title>User Registration</title>
+    </head>
+
+    <body class="text-center">
+        <div style="width:30em;margin:auto">
+            <img class="mb-4" src="img/AemulusLogo.png" alt="Aemulus">
+            <h1 class="h2 mb-3 font-weight-normal">Registration</h1>
+
+                <div class="form-row mb-3">
+                    <div class="col">
+                        <input type="text" id="inputFirstName" class="form-control" placeholder="First Name" required>
+                    </div>
+                    <div class="col">
+                        <input type="text" id="inputLastName" class="form-control" placeholder="Last Name" required>
+                    </div>
+                </div>
+                        <input type="email" id="inputEmail" class="form-control mb-3" placeholder="Email" required>
+                        <input type="password" id="inputPassword" class="form-control mb-3" onkeypress="confirmPassword()" placeholder="Password" required>
+                        <input type="password" id="inputPwConfirm" class="form-control" onkeypress="confirmPassword()" placeholder="Password Confirmation" required>
+                        <input type="checkbox" id="checkPassword" class="mt-2 mb-2" onclick="showPassword()"> Show Password
+                        <button class="btn btn-lg btn-primary btn-block" type="submit"  id="registerBtn">Register</button>
+                        <button class="btn btn-lg btn-primary btn-block" type="reset" onclick="resetValue()">Reset</button>
+        </div>
+
+        <script src="/register.js"></script>
+    </body>
+</html>
