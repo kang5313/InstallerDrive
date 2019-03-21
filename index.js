@@ -3,7 +3,6 @@ var bodyParser = require ('body-parser');
 var app = express();
 var path=require('path');
 var cookieParser = require('cookie-parser');
-const fs = require('fs');
 var jwt = require('jsonwebtoken');
 const FirebaseAuth = require('firebaseauth');
 const firebaseAuth = new FirebaseAuth("AIzaSyAPIYWshsmMtTeoiHBEzFzhWsGRRQ6dU4g");
