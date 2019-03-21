@@ -16,8 +16,7 @@ admin.initializeApp({
 var db=admin.firestore();
 var i = "Aemulus Corp";
 var a = 'http://localhost:3000/aemulus';
-var privateKey = fs.readFileSync('private.key','utf8');
-var publicKey = fs.readFileSync('public.key','utf8');
+var signKey = "TOeo7C5Z-6HVn3mI8G-vX-TUhUBaU128zGNO0v-ghyTj6_B5xt3gbr0uodEZAjommr3GD290a1jLmWKo4yvpzg";
 var uid;
 
 app.use(express.static(__dirname+'/assets'));
@@ -37,10 +36,10 @@ function GenerateToken(email,res){
         subject : s,
         audience : a,
         expiresIn : "1h",
-        algorithm : "RS256"
+        algorithm : "HS256"
     };
 
-    res.locals.token = jwt.sign(payload,privateKey,signOptions);
+    res.locals.token = jwt.sign(payload,signKey,signOptions);
     res.cookie("token",res.locals.token);
     res.cookie("userEmail",email);
     res.write("Welcome");
@@ -48,17 +47,19 @@ function GenerateToken(email,res){
 }
 
 //Access Control For Login & Registration Page (Redirect to main)
+/*If the cookie is not empty and jwt is successfully verified the page,
+the webpage will be redirected to main page. This is to prevent user access the login & register page after they signed in*/
 function accessControlAuthenticated(req,res,url,uid){
     var verifyOptions = {
         issuer : i,
         subject : req.body.userEmail,
         audience : a,
         expiresIn : "1h",
-        algorithm : "RS256"
+        algorithm : "HS256"
     };
 
     if(req.cookies!=null){
-        var x = jwt.verify(req.cookies.token,publicKey,verifyOptions,function(err,decoded){
+        var x = jwt.verify(req.cookies.token,signKey,verifyOptions,function(err,decoded){
             if(err)
                 return;
             else
@@ -72,22 +73,24 @@ function accessControlAuthenticated(req,res,url,uid){
          res.redirect('/login');
 }
 
-//Access Control For Unauthenticated User (redirect to login page)
+/*Access Control For Unauthenticated User (redirect to login page)
+If the cookie is empty or the jwt in the cookie is false after verified,
+then the webpage will be redirected to login page.*/
 function accessControlUnauthenticated(req,res,url,uid){
     var verifyOptions = {
         issuer : i,
         subject : req.body.userEmail,
         audience : a,
         expiresIn : "1h",
-        algorithm : "RS256"
+        algorithm : "HS256"
     };
     
     if(req.cookies!=null)
-    {var x = jwt.verify(req.cookies.token,publicKey,verifyOptions,function(err,decoded){
+    {var x = jwt.verify(req.cookies.token,signKey,verifyOptions,function(err,decoded){
             if(err)
-                {
-                    console.log("You Entered Here")
-                    res.redirect(url);}
+            {
+                res.redirect(url);
+            }
             else 
             {
                 return;
@@ -109,6 +112,7 @@ app.get('/login', (req, res) => {
 });
 
 //'POST' Login Page
+/*User signs in with email and password. A jwt is generated and sent to the client after successful sign-in*/
 app.post('/login', (req, res,next) => {
     var email = req.body.userEmail;
     var password = req.body.userPass;
@@ -138,6 +142,7 @@ app.get('/register',(req,res)=>{
 })
 
 //'POST' Register
+/*User registers with email and password. A jwt is generated and sent to the client after successful register*/
 app.post('/register', (req, res,next) => {
     var email = req.body.userEmail;
     var password = req.body.userPass;
@@ -210,7 +215,7 @@ app.post('/login/reset',(req,res)=>{
     })
 })
 
-
+//LOGIN WITH GOOGLE
 app.post('/Google', (req, res) => {
     var docRef= db.collection('Users').doc(req.body.email);
     firebaseAuth.loginWithGoogle(req.body.accesstoken,function(err,result){
@@ -224,7 +229,6 @@ app.post('/Google', (req, res) => {
             });
 
             GenerateToken(req.body.email,res);
-
         }
         })
 
