@@ -5,12 +5,40 @@ var path=require('path');
 var cookieParser = require('cookie-parser');
 var jwt = require('jsonwebtoken');
 const FirebaseAuth = require('firebaseauth');
-const firebaseAuth = new FirebaseAuth("AIzaSyAPIYWshsmMtTeoiHBEzFzhWsGRRQ6dU4g");
+const firebaseAuth = new FirebaseAuth("AIzaSyAPIYWshsmMtTeoiHBEzFzhWsGRRQ6dU4g"); // Change to your Firebase Web API Key
 const admin = require('firebase-admin')
-var serviceAccount = require('projectone-5e7be-firebase-adminsdk-h55nn-16ebad401b.json');
+const multer = require('multer')
+const fs = require('fs')
+const uploadFolder = __dirname+'/uploads/';
+
+var storage = multer.diskStorage({
+    destination:"Uploads/",
+    filename:function(req,file,callback){
+        var fileName = file.originalname.split(".")[0];
+        var extension = file.originalname.split(".")[1];
+        callback(null,fileName+"-"+Date.now()+"."+extension);
+    }
+})
+
+var upload = multer({
+    storage:storage,
+    limits : {
+        fileSize: 100*1024*1024,    //100MB upload limit
+        files :  1      // 1 file
+    },
+    fileFilter : function(req,file,callback){
+        var ext = path.extname(file.originalname);
+        if(ext!='.exe' && ext!='.dll' &&ext!='.zip'){
+            return callback(new Error('Only .zip , .exe and .dll are allowed'));
+        }
+            return callback(null,true);
+    }
+}).any();
+
+var serviceAccount = require('projectone-5e7be-firebase-adminsdk-h55nn-16ebad401b.json');   //Change to the path of your Firebase Admin-SDK private key jason file
 admin.initializeApp({
     credential:admin.credential.cert(serviceAccount),
-    databaseURL: "https://projectone-5e7be.firebaseio.com"
+    databaseURL: "https://projectone-5e7be.firebaseio.com"  //Change to your firebase databaseURL
 });
 var db=admin.firestore();
 var i = "Aemulus Corp";
@@ -28,11 +56,10 @@ function GenerateToken(email,res){
     var payload = {
         Email : email,
     }
-    var s = email;
 
     var signOptions = {
         issuer : i,
-        subject : s,
+        subject : email,
         audience : a,
         expiresIn : "1h",
         algorithm : "HS256"
@@ -58,7 +85,7 @@ function accessControlAuthenticated(req,res,url,uid){
     };
 
     if(req.cookies!=null){
-        var x = jwt.verify(req.cookies.token,signKey,verifyOptions,function(err,decoded){
+        jwt.verify(req.cookies.token,signKey,verifyOptions,function(err,decoded){
             if(err)
                 return;
             else
@@ -84,8 +111,8 @@ function accessControlUnauthenticated(req,res,url,uid){
         algorithm : "HS256"
     };
     
-    if(req.cookies!=null)
-    {var x = jwt.verify(req.cookies.token,signKey,verifyOptions,function(err,decoded){
+    if(req.cookies!=null){
+        jwt.verify(req.cookies.token,signKey,verifyOptions,function(err,decoded){
             if(err)
             {
                 res.redirect(url);
@@ -94,7 +121,7 @@ function accessControlUnauthenticated(req,res,url,uid){
             {
                 return;
             }
-    })
+        })
     }
     else{
          res.redirect('/login');
@@ -181,11 +208,39 @@ app.get('/main',(req,res)=>{
     res.sendFile(path.join(__dirname,'assets','main.html'));
 })
 
+//UPLOAD FILES TO EXPRESS
+app.post('/main',function(req,res){
+    upload(req,res,function(err){
+        if(err instanceof multer.MulterError){
+            console.log()
+            res.send(err.message);
+        }
+        else if (err){
+            res.send(err.message);
+        }
+        else{
+            res.send("Files are uploaded successful");
+        }
+    })
+})
+
+//Retrieve all the uploaded files from directory
+app.get('/main/files/getall',function(req,res){
+    fs.readdir(uploadFolder,(err,files)=>{
+        res.send(JSON.stringify(files));
+    })
+})
+
+app.get('/main/files/:filename',function(req,res){
+    var filename = req.params.filename;
+    res.download(uploadFolder+filename);
+})
+
 //AJAX retrieve user data from firestore
 app.get('/username/:uid',(req,res)=>{
     var userEmail = req.params.uid;
     var userRef = db.collection('Users').doc(userEmail);
-    var getDoc = userRef.get()
+    userRef.get()
         .then(doc =>
         {
             if(!doc.exists){

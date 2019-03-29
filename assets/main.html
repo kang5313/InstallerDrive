@@ -14,5 +14,14 @@
                 <li class="logout"><a href="javascript:logout()">Logout</a></li>
             </ul>
         </div>
+
+        <form action="/main" method="POST" enctype="multipart/form-data" id="formUpload" onsubmit="return uploadFile(this)">
+            <input type="file" name="file-to-upload" id="fileToUpload">
+            <input type="submit" value="Upload">
+        </form>
+        <button id="listFilesBtn" onclick="listAllFile()">LIST FILE</button>
+        <div>
+            <ul id="listFiles"></ul>
+        </div>
     </body>
 </html>

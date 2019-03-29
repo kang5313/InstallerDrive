@@ -23,7 +23,7 @@ function login(){
             if(this.readyState != 4 ) return;
                 
             if(this.status == 200){
-                window.alert(xmlHttp.responseText);
+                window.alert("?????");
                 window.location.href = "http://localhost:3000/main";
             }
             

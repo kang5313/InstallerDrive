@@ -12,9 +12,11 @@
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
+    "file-type": "^10.9.0",
     "firebase-admin": "^7.0.0",
     "firebaseauth": "^1.0.0",
     "jsonwebtoken": "^8.5.0",
+    "multer": "^1.4.1",
     "path": "^0.12.7"
   },
   "devDependencies": {}
