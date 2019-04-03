@@ -2,70 +2,74 @@ body {
     margin: 0;
     padding: 0;
   }
-   
-  .nav ul {
-    list-style: none;
-    background-color: #444;
-    text-align: right;
-  }
-  .nav li {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1em;
-    line-height: 40px;
-    height: 40px;
-    border-bottom: 1px solid #888;
-  }
-   
-  .nav a {
-    text-decoration: none;
-    color: #fff;
-    display: block;
-    transition: .3s background-color;
-    padding:auto;
-    text-align: center
-  }
-   
-  .nav a:hover {
-    background-color: #005f5f;
-  }
-   
-  .nav a.active {
-    background-color: #fff;
-    color: #444;
-    cursor: default;
+
+.navbar {
+  background-color: #1f1f14;
+}
+
+.navbar li{
+  margin:0;
+  margin-left:3em;
+}
+
+.nav li:hover{
+  background-color: #005f5f;;
+}
+
+.nav li a{
+  font-family: 'Mukta 27px', sans-serif;
+  color:white;
+  font-size: 1.3em ;
+}
+
+#FileUploadContainer{
+  margin:5em;
+  padding:2em;
+  box-sizing:border-box;
+  border : 2px solid rgba(0,0,0,.1);
+  box-shadow:0 5px 10px rgba(0,0,0,.2);
+  display:none;
+  font-family: 'Mukta 27px', sans-serif;
+}
+
+#FileContainer{
+  margin:5em;
+  padding:2em;
+  box-sizing:border-box;
+  border : 2px solid rgba(0,0,0,.1);
+  box-shadow:0 5px 10px rgba(0,0,0,.3);
+  font-family: 'Mukta 27px', sans-serif;
+  display:none;
+}
+
+.fa, .fas{
+  float:right;
+  margin-right: 1em;
+}
+
+#inputForUpload {
+  margin:auto;
+}
+
+#inputForUpload input{
+  margin:1em;
+}
+
+@media(max-width:768px){
+  #FileUploadContainer{
+    margin:2em;
+    padding:0;
   }
 
-  #listFilesBtn {
-    margin-top: 2em;
+  #FileContainer{
+    margin:2em;
+    padding:0;
   }
+}
 
-   
-  @media screen and (min-width: 600px) {
-    .nav li {
-      width: 250px;
-      border-bottom: none;
-      height: 50px;
-      line-height: 50px;
-      font-size: 1em;
-    }
-   
-    /* Option 1 - Display Inline */
-    .nav li {
-      display: inline-block;
-      margin-right: -4px;
-    }
-   
-    /* Options 2 - Float
-    .nav li {
-      float: left;
-    }
-    .nav ul {
-      overflow: auto;
-      width: 600px;
-      margin: 0 auto;
-    }
-    .nav {
-      background-color: #444;
-    }
-    */
+
+@media(max-width:576px){
+  #inputForUpload{
+    padding:3em;
   }
+}

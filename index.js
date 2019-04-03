@@ -11,15 +11,25 @@ const multer = require('multer')
 const fs = require('fs')
 const uploadFolder = __dirname+'/uploads/';
 
+//Setup the path and storage for file upload by using multer. Seperate the filename and file extension then add timestamp behind file name
 var storage = multer.diskStorage({
-    destination:"Uploads/",
+    destination:(req,file,callback)=>{  //Get the user email from cookie and check/visit the specific user directory , save the uploaded files into the specific user directory
+        var useremail = req.cookies.userEmail;
+        var path = __dirname+"/Uploads/"+useremail+"/";
+        if(!fs.existsSync(path)){   //check the exist of directory synchronously
+            fs.mkdirSync(path);
+        }
+        callback(null,path); 
+    },
     filename:function(req,file,callback){
         var fileName = file.originalname.split(".")[0];
         var extension = file.originalname.split(".")[1];
-        callback(null,fileName+"-"+Date.now()+"."+extension);
+        var uploadDate = new Date().toISOString().substring(0,10);
+        callback(null,uploadDate+"-"+Date.now()+"-"+fileName+"."+extension);
     }
 })
 
+//Set limitation for file type and file size.
 var upload = multer({
     storage:storage,
     limits : {
@@ -35,6 +45,7 @@ var upload = multer({
     }
 }).any();
 
+
 var serviceAccount = require('projectone-5e7be-firebase-adminsdk-h55nn-16ebad401b.json');   //Change to the path of your Firebase Admin-SDK private key jason file
 admin.initializeApp({
     credential:admin.credential.cert(serviceAccount),
@@ -43,7 +54,7 @@ admin.initializeApp({
 var db=admin.firestore();
 var i = "Aemulus Corp";
 var a = 'http://localhost:3000/aemulus';
-var signKey = "TOeo7C5Z-6HVn3mI8G-vX-TUhUBaU128zGNO0v-ghyTj6_B5xt3gbr0uodEZAjommr3GD290a1jLmWKo4yvpzg";
+var signKey = "TOeo7C5Z-6HVn3mI8G-vX-TUhUBaU128zGNO0v-ghyTj6_B5xt3gbr0uodEZAjommr3GD290a1jLmWKo4yvpzg"; //Change to your signature key for JWT
 var uid;
 
 app.use(express.static(__dirname+'/assets'));
@@ -225,18 +236,41 @@ app.post('/main',function(req,res){
 })
 
 //Retrieve all the uploaded files from directory
-app.get('/main/files/getall',function(req,res){
-    fs.readdir(uploadFolder,(err,files)=>{
-        res.send(JSON.stringify(files));
-    })
+app.get('/main/files/getall',function(req,res,next){
+    accessControlUnauthenticated(req,res,"/login",uid);
+    next();
 })
+
+app.get('/main/files/getall',function(req,res){
+    var directory = uploadFolder+req.cookies.userEmail;
+    if(fs.existsSync(directory)){
+        fs.readdir(directory,(err,files)=>{
+            if(err)
+                console.log(err);
+            res.send(JSON.stringify(files));    //Pass the files in the directory to the client in string format
+        })
+    }
+})
+
+//Download the uploaded files
+app.get('/main/files/:filename',function(req,res,next){
+    accessControlUnauthenticated(req,res,"/login",uid);
+    next();
+})
+
 
 app.get('/main/files/:filename',function(req,res){
     var filename = req.params.filename;
-    res.download(uploadFolder+filename);
+    var directory = uploadFolder+req.cookies.userEmail+"/";
+    res.download(directory+filename);
 })
 
 //AJAX retrieve user data from firestore
+app.get('/username/:uid',function(req,res,next){
+    accessControlUnauthenticated(req,res,"/login",uid);
+    next();
+})
+
 app.get('/username/:uid',(req,res)=>{
     var userEmail = req.params.uid;
     var userRef = db.collection('Users').doc(userEmail);
@@ -267,6 +301,13 @@ app.post('/login/reset',(req,res)=>{
             console.log(result);
         }
     })
+})
+
+app.get('/delete/filename/:fileToDelete',(req,res)=>{
+    var fileToDelete = req.params.fileToDelete;
+    var directory = uploadFolder+req.cookies.userEmail+"/";
+    fs.unlinkSync(directory+fileToDelete);
+    res.send("Successful!");
 })
 
 //LOGIN WITH GOOGLE

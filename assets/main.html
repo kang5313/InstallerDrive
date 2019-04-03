@@ -4,23 +4,43 @@
         <meta name="google-signin-scope" content="profile email">
         <meta name="google-signin-client_id" content="514063112833-d3f5ltm1617ktl50sh397ehv7smcd9co.apps.googleusercontent.com">
         <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
         <link rel="stylesheet" type="text/css" href="main.css">
     </head>
     <body onload="retrieveUserProfile()">
         <script src="/main.js"></script>
-        <div class="nav">
-            <ul>
-                <li><a href="#" id="username"></a></li>
-                <li class="logout"><a href="javascript:logout()">Logout</a></li>
-            </ul>
-        </div>
+        <nav class = "navbar navbar-default navbar-expand-sm">
+            <div class= "container-fluid">
+                <div class="nav navbar-header"></div>
+                <ul class="nav navbar-nav">
+                    <li><a href="javascript:displayUpload()">Upload</a></li>
+                    <li><a href="javascript:listAllFile()">Download</a></li>
+                    <li><a href="javascript:void(0)" id="username"></a></li>
+                    <li><a href="javascript:logout()">Logout</a></li>
+                </ul>
+            
+            </div>
+        </nav>
 
-        <form action="/main" method="POST" enctype="multipart/form-data" id="formUpload" onsubmit="return uploadFile(this)">
-            <input type="file" name="file-to-upload" id="fileToUpload">
-            <input type="submit" value="Upload">
-        </form>
-        <button id="listFilesBtn" onclick="listAllFile()">LIST FILE</button>
-        <div>
+
+       <div id="FileUploadContainer">
+            <form action="/main" class="form-horizontal" method="POST" enctype="multipart/form-data" id="formUpload">
+                <div class="form-group">
+                    <label class="control-label col-sm-5"><b style="font-size: 2em;">Upload File </b></label>
+                    <div class="col-sm-6" id="inputForUpload">
+                        <input type="file" class ="form-control py-1" name="file-to-upload" id="fileToUpload" >
+                        <input type="button" value="Upload" onclick="uploadFile(this.form)">
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div id="FileContainer">
+            <label class="control-label col-sm-3"><b style="font-size: 2em;">Download </b></label>
             <ul id="listFiles"></ul>
         </div>
     </body>
